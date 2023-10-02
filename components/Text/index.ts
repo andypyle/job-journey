@@ -1,0 +1,1 @@
+export { LogoType } from './LogoType'
