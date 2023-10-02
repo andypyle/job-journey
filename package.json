@@ -4,9 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:all": "supabase start && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:types": "supabase gen types typescript --local --schema=public,auth > db/types.ts",
+    "db:migrate": "supabase migration up",
+    "db:manage": "open http://localhost:54323"
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.1.5",
@@ -22,6 +28,7 @@
     "openai": "^4.11.0",
     "react": "latest",
     "react-dom": "latest",
+    "react-hook-form": "^7.47.0",
     "zod": "^3.22.2"
   },
   "devDependencies": {
