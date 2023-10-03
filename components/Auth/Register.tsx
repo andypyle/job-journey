@@ -2,13 +2,15 @@
 
 import { registerSchema } from '@/util/schemas'
 import {
+  AbsoluteCenter,
+  Box,
   Button,
   Card,
+  Divider,
   FormControl,
   FormLabel,
   HStack,
   Input,
-  Text,
 } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
@@ -62,7 +64,7 @@ export const Register = () => {
         p={4}
         shadow="none"
         border="1px solid var(--chakra-colors-gray-200)">
-        <LogoType />
+        <LogoType mb={4} />
         <HStack gap={4} flexDir={{ base: 'column', sm: 'row' }} w="full">
           <FormControl isInvalid={Boolean(errors.firstName)}>
             <FormLabel>First Name</FormLabel>
@@ -93,10 +95,15 @@ export const Register = () => {
           isLoading={isSubmitting}>
           Register
         </Button>
-        <Text size="xs">Have an account?</Text>{' '}
-        <Link href="/login" style={{ display: 'inline-block' }}>
-          Log In!
-        </Link>
+        <Box position="relative" py={4} w="full">
+          <Divider color="gray.600" />
+          <AbsoluteCenter bg="white" px="4" color="gray.600">
+            Have an account?
+          </AbsoluteCenter>
+        </Box>
+        <Button as={Link} href="/login" size="lg" colorScheme="blue" w="full">
+          Login
+        </Button>
       </Card>
     </form>
   )

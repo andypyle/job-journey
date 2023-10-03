@@ -3,6 +3,7 @@ import { createServerClient } from '@/db'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import '../globals.css'
+import { MainLayout } from './_components'
 
 export default async function RootLoggedInLayout({
   children,
@@ -15,6 +16,10 @@ export default async function RootLoggedInLayout({
   } = await supabase.auth.getSession()
 
   if (!session) return redirect('/login')
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   return (
     <html lang="en">
       <head>
@@ -25,7 +30,9 @@ export default async function RootLoggedInLayout({
         />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <MainLayout user={user!}>{children}</MainLayout>
+        </Providers>
       </body>
     </html>
   )
