@@ -13,6 +13,7 @@ import {
 import type { User } from '@supabase/supabase-js'
 import { IconLogout2 } from '@tabler/icons-react'
 import { useMemo } from 'react'
+import { useUser } from '../hooks/useUser'
 
 type UserAvatarProps = {
   user: User
@@ -23,6 +24,10 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({ user, ...props }) => {
     () => `${user.user_metadata.firstName} ${user.user_metadata.lastName}`,
     [user]
   )
+
+  const { logout } = useUser(user)
+
+  const onClickLogout = () => logout()
   return (
     <Menu {...props}>
       <MenuButton
@@ -36,7 +41,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({ user, ...props }) => {
       </MenuButton>
       <MenuList>
         <MenuGroup title={name}>
-          <MenuItem icon={<Icon as={IconLogout2} />}>Logout</MenuItem>
+          <MenuItem
+            icon={<Icon as={IconLogout2} boxSize={6} />}
+            onClick={onClickLogout}>
+            Logout
+          </MenuItem>
         </MenuGroup>
       </MenuList>
     </Menu>
