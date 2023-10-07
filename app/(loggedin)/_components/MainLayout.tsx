@@ -23,6 +23,7 @@ type MainLayoutProps = {
 } & GridProps
 
 export const UserContext = createContext<User | null>(null)
+export const NavToggleContext = createContext<null | (() => void)>(null)
 
 export const MainLayout: React.FC<MainLayoutProps> = ({
   user,
@@ -61,27 +62,29 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           </HStack>
         </Box>
 
-        <Flex gridColumn="1" gridRow="2" gap={4} position="relative">
-          <Box
-            as="aside"
-            p={4}
-            bg="gray.50"
-            w={{ base: '100%', md: '300px' }}
-            position={{ base: 'absolute', md: 'unset' }}
-            top={{ base: 0, md: 'unset' }}
-            bottom={{ base: 0, md: 'unset' }}
-            zIndex={{ base: 500, md: 'unset' }}
-            transform={{
-              base: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-              md: 'translateX(0)',
-            }}
-            transition="transform ease-in 200ms">
-            <SidebarNav />
-          </Box>
-          <Box as="main" p={4} flex={1}>
-            {children}
-          </Box>
-        </Flex>
+        <NavToggleContext.Provider value={onToggle}>
+          <Flex gridColumn="1" gridRow="2" gap={4} position="relative">
+            <Box
+              as="aside"
+              p={4}
+              bg="gray.50"
+              w={{ base: '100%', md: '300px' }}
+              position={{ base: 'absolute', md: 'unset' }}
+              top={{ base: 0, md: 'unset' }}
+              bottom={{ base: 0, md: 'unset' }}
+              zIndex={{ base: 500, md: 'unset' }}
+              transform={{
+                base: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+                md: 'translateX(0)',
+              }}
+              transition="transform ease-in 200ms">
+              <SidebarNav />
+            </Box>
+            <Box as="main" p={4} flex={1}>
+              {children}
+            </Box>
+          </Flex>
+        </NavToggleContext.Provider>
 
         <Box as="footer" gridColumn="span 2" gridRow="3" p={4}>
           Footer?

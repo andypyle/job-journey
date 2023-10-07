@@ -6,6 +6,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalContentProps,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -18,6 +19,7 @@ export type ModalProps = {
   isLoading?: boolean
   onAction?: () => void
   buttonText?: string
+  asForm?: ModalContentProps
 } & ChakraModalProps
 
 export const Modal: React.FC<ModalProps> = ({
@@ -27,12 +29,13 @@ export const Modal: React.FC<ModalProps> = ({
   onAction,
   buttonText,
   children,
+  asForm,
   ...props
 }) => {
   return (
     <ChakraModal {...props}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent {...asForm}>
         {title ? <ModalHeader>{title}</ModalHeader> : null}
         <ModalCloseButton />
         <ModalBody>{children}</ModalBody>

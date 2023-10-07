@@ -2,6 +2,8 @@
 
 import { DatePicker } from '@/components/Form'
 import { Modal, type ModalProps } from '@/components/Modal'
+import type { RoleRow } from '@/db/types'
+import { getDiff } from '@/util'
 import { createRoleSchema } from '@/util/schemas'
 import {
   Button,
@@ -15,12 +17,17 @@ import {
 } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { FieldValues, useForm, useWatch } from 'react-hook-form'
+import { Control, FieldValues, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
 type RoleType = z.infer<typeof createRoleSchema>
 
-export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
+type EditRoleModalProps = {
+  role: RoleRow
+} & Omit<ModalProps, 'children'>
+
+export const EditRoleModal: React.FC<EditRoleModalProps> = ({
+  role,
   onClose,
   ...props
 }) => {
@@ -34,6 +41,13 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
     control,
   } = useForm({
     resolver: zodResolver(createRoleSchema),
+    defaultValues: {
+      company: role.company,
+      title: role.title,
+      startMonth: role.startMonth,
+      endMonth: role.endMonth,
+      current: role.current
+    }
   })
 
   const { refresh } = useRouter();
@@ -49,14 +63,17 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
   })
 
   const onSubmit = async (values: FieldValues) => {
+    const changed = getDiff(getValues(), role)
     if (isValid) {
-      const { status } = await fetch('/api/roles', {
-        method: 'POST',
+      const { status } = await fetch(`/api/roles/${role.id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(changed),
       });
+
+      console.log({status})
 
       if (status === 200) {
         reset();
@@ -68,12 +85,12 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
 
   return (
     <Modal
-      title="New Role"
+      title={`Edit Role: ${role.title} @ ${role.company}`}
       size={{ base: 'full', md: '2xl' }}
       footer={
         <ModalFooter justifyContent="flex-end" p={4}>
           <Button colorScheme="blue" size="md" type="submit" isLoading={isSubmitting}>
-            Create Role
+            Save Role
           </Button>
         </ModalFooter>
       }
@@ -98,7 +115,7 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
         <HStack gap={4} w="100%" flexDir={{base: 'column', md: 'row'}}>
           <FormControl isInvalid={Boolean(errors.startMonth)}>
             <FormLabel>Start Month</FormLabel>
-            <DatePicker control={control} {...register('startMonth')} />
+            <DatePicker control={control as Control<any>} {...register('startMonth')} />
           </FormControl>
           <FormControl isInvalid={Boolean(errors.endMonth)}>
             <FormLabel
@@ -117,10 +134,9 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
               </Checkbox>
             </FormLabel>
             <DatePicker
-              control={control}
-              minDate={new Date(startMonth)}
-              defaultValue={startMonth ? new Date(startMonth) : null}
-              disabled={current}
+              control={control as Control<any>}
+              minDate={new Date(startMonth!)}
+              disabled={!!current}
               {...register('endMonth')}
             />
           </FormControl>

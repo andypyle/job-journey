@@ -22,7 +22,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useContext, useMemo } from 'react'
-import { UserContext } from './MainLayout'
+import { NavToggleContext, UserContext } from './MainLayout'
 
 type SidebarNavLinkProps = {
   icon?: IconType
@@ -43,6 +43,7 @@ const SidebarNavLink: React.FC<SidebarNavLinkProps> = ({
   children,
 }) => {
   const { isOpen, onToggle } = useDisclosure()
+  const toggleNavBar = useContext(NavToggleContext)
   const pathname = usePathname()
   const isActive = href ? href === pathname : false
   return (
@@ -53,7 +54,7 @@ const SidebarNavLink: React.FC<SidebarNavLinkProps> = ({
         _hover={{ bg: 'green.100' }}
         cursor="pointer"
         as={!children ? Link : HStack}
-        onClick={children ? onToggle : onClick ? onClick : () => null}
+        onClick={children ? onToggle : onClick ? onClick : toggleNavBar!}
         color={isActive ? 'blue.400' : 'gray.600'}
         {...(children ? {} : { href })}>
         {left || icon ? (

@@ -1,6 +1,6 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextRequest, NextResponse } from 'next/server'
-import { Database } from './types'
+import { Database } from './dbTypes'
 
 export const createMiddleClient = (req: NextRequest, res: NextResponse) =>
   createMiddlewareClient<Database>(

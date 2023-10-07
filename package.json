@@ -10,7 +10,7 @@
     "lint": "next lint",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
-    "db:types": "supabase gen types typescript --local --schema=public,auth > db/types.ts",
+    "db:types": "supabase gen types typescript --local --schema=public,auth > db/dbTypes.ts",
     "db:migrate": "supabase migration up",
     "db:manage": "open http://localhost:54323"
   },
@@ -28,6 +28,7 @@
     "next": "latest",
     "openai": "^4.11.0",
     "react": "latest",
+    "react-date-picker": "^10.5.1",
     "react-dom": "latest",
     "react-hook-form": "^7.47.0",
     "zod": "^3.22.2"
@@ -38,6 +39,8 @@
     "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "supabase-to-zod": "^1.0.4",
+    "ts-to-zod": "^3.1.3",
     "typescript": "latest"
   }
 }

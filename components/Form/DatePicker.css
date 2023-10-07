@@ -1,0 +1,76 @@
+.react-date-picker,
+.react-date-picker *,
+.react-date-picker *:before,
+.react-date-picker *:after {
+}
+
+.react-date-picker {
+  width: 100%;
+  border-radius: var(--chakra-radii-md);
+}
+
+.react-date-picker * {
+  font-family: var(--chakra-fonts-body);
+}
+
+.react-date-picker__wrapper {
+  padding: 6px;
+  border: thin solid var(--chakra-colors-chakra-border-color);
+}
+
+.react-calendar {
+  padding: 1rem;
+  border-radius: var(--chakra-radii-md);
+  border: thin solid var(--chakra-colors-chakra-border-color);
+  color: var(--chakra-colors-gray-600);
+}
+
+button.react-calendar__navigation__label:disabled {
+  background-color: unset;
+}
+
+.react-calendar__navigation__prev-button:disabled,
+.react-calendar__navigation__prev2-button:disabled,
+.react-calendar__navigation__next-button:disabled,
+.react-calendar__navigation__next2-button:disabled {
+  cursor: not-allowed;
+  background-color: var(--chakra-colors-gray-50);
+  color: var(--chakra-colors-gray-400);
+}
+
+.react-calendar__navigation__prev-button:enabled:hover,
+.react-calendar__navigation__prev2-button:enabled:hover,
+.react-calendar__navigation__next-button:enabled:hover,
+.react-calendar__navigation__next2-button:enabled:hover {
+  background-color: var(--chakra-colors-blue-100) !important;
+}
+
+.react-calendar__navigation__next-button,
+.react-calendar__navigation__prev2-button {
+  border-radius: var(--chakra-radii-md) 0 0 var(--chakra-radii-md);
+}
+
+.react-calendar__navigation__prev-button,
+.react-calendar__navigation__next2-button {
+  border-radius: 0 var(--chakra-radii-md) var(--chakra-radii-md) 0;
+}
+
+.react-calendar__year-view .react-calendar__tile,
+.react-calendar__decade-view .react-calendar__tile,
+.react-calendar__century-view .react-calendar__tile {
+  padding: var(--chakra-space-4) var(--chakra-space-4);
+}
+
+.react-calendar__tile--now {
+  background-color: var(--chakra-colors-orange-200);
+  border-radius: var(--chakra-radii-md);
+}
+
+.react-calendar__tile--now:enabled:hover {
+  background-color: var(--chakra-colors-orange-100);
+}
+
+.react-calendar__tile:disabled {
+  background-color: var(--chakra-colors-gray-50);
+  color: var(--chakra-colors-gray-400);
+}
