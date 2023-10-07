@@ -2,11 +2,12 @@
 
 import { DatePicker } from '@/components/Form'
 import { Modal, type ModalProps } from '@/components/Modal'
-import { createRoleSchema } from '@/util/schemas'
+import { rolesInsertSchema } from '@/db/dbTypes.schemas'
 import {
   Button,
   Checkbox,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   HStack,
   Input,
@@ -15,10 +16,11 @@ import {
 } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { FieldValues, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
-type RoleType = z.infer<typeof createRoleSchema>
+type RoleType = z.infer<typeof rolesInsertSchema>
 
 export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
   onClose,
@@ -28,13 +30,17 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
     handleSubmit,
     register,
     reset,
+    watch,
+    resetField,
     setValue,
     getValues,
     formState: { errors, isSubmitting, isValid, defaultValues },
     control,
   } = useForm({
-    resolver: zodResolver(createRoleSchema),
+    resolver: zodResolver(rolesInsertSchema),
   })
+
+  console.log({ errors })
 
   const { refresh } = useRouter();
 
@@ -48,17 +54,27 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
     name: 'current',
   })
 
+  useEffect(() => {
+    const sub = watch((value, { name, type }) => {
+      if(name === 'current' && value.current === true) {
+        resetField('endMonth', { defaultValue: null })
+      }
+    });
+    return () => sub.unsubscribe();
+  }, [watch, resetField])
+
   const onSubmit = async (values: FieldValues) => {
     if (isValid) {
-      const { status } = await fetch('/api/roles', {
+      const data = await fetch('/api/roles', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(values),
       });
+      console.log({data:await data.json()})
 
-      if (status === 200) {
+      if (data?.status === 200) {
         reset();
         onClose();
         refresh();
@@ -85,22 +101,39 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
       {...props}>
       <VStack gap={4}>
         <HStack gap={4} w="100%" flexDir={{base: 'column', md: 'row'}}>
-          <FormControl isInvalid={Boolean(errors.company)}>
+          <FormControl isInvalid={Boolean(errors.company)}aria-invalid={Boolean(errors.company)} p={4} borderRadius="md" _invalid={{
+            bg: 'red.50'
+          }}>
             <FormLabel>Company</FormLabel>
             <Input type="text" {...register('company')} />
+            {errors.company ? <FormErrorMessage>
+              { errors.company.message as string}
+            </FormErrorMessage> : null}
           </FormControl>
-          <FormControl isInvalid={Boolean(errors.title)}>
+          <FormControl isInvalid={Boolean(errors.title)} aria-invalid={Boolean(errors.title)} p={4} borderRadius="md" _invalid={{
+            bg: 'red.50'
+          }}>
             <FormLabel>Job Title</FormLabel>
             <Input type="text" {...register('title')} />
+            {errors.title ? <FormErrorMessage>
+              { errors.title.message as string}
+            </FormErrorMessage> : null}
           </FormControl>
         </HStack>
 
         <HStack gap={4} w="100%" flexDir={{base: 'column', md: 'row'}}>
-          <FormControl isInvalid={Boolean(errors.startMonth)}>
+          <FormControl isInvalid={Boolean(errors.startMonth)} aria-invalid={Boolean(errors.startMonth)} p={4} borderRadius="md" _invalid={{
+            bg: 'red.50'
+          }}>
             <FormLabel>Start Month</FormLabel>
-            <DatePicker control={control} {...register('startMonth')} />
+            <DatePicker control={control} {...register('startMonth')} setValue={setValue} />
+            {errors.startMonth ? <FormErrorMessage>
+              { errors.startMonth.message as string}
+            </FormErrorMessage> : null}
           </FormControl>
-          <FormControl isInvalid={Boolean(errors.endMonth)}>
+          <FormControl isInvalid={Boolean(errors.endMonth)} aria-invalid={Boolean(errors.endMonth)} p={4} borderRadius="md" _invalid={{
+            bg: 'red.50'
+          }}>
             <FormLabel
               display="flex"
               alignItems="center"
@@ -118,11 +151,15 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
             </FormLabel>
             <DatePicker
               control={control}
+              setValue={setValue} 
               minDate={new Date(startMonth)}
               defaultValue={startMonth ? new Date(startMonth) : null}
               disabled={current}
               {...register('endMonth')}
             />
+            {errors.endMonth ? <FormErrorMessage>
+              { errors.endMonth.message as string }
+            </FormErrorMessage> : null}
           </FormControl>
         </HStack>
       </VStack>

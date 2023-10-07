@@ -17,16 +17,23 @@ import './DatePicker.css'
 
 type DatePickerProps = {
   minDate?: Date
+  setValue: (key: any, value: any) => void
 } & Omit<ControllerProps, 'render'>
 
 export const DatePicker: React.FC<Omit<DatePickerProps, 'render'>> = forwardRef(
-  ({ control, name, minDate, defaultValue = '', disabled = false }, ref) => {
+  (
+    { control, name, minDate, defaultValue = '', setValue, disabled = false },
+    ref
+  ) => {
     return (
       <Controller
         render={({ field: { ref, ...fieldProps } }) => {
           return (
             <ReactDatepicker
               {...fieldProps}
+              onChange={(v) =>
+                setValue(name, v ? new Date(v as any).toISOString() : null)
+              }
               inputRef={ref}
               nextLabel={<Icon as={IconChevronRight} boxSize={4} />}
               next2Label={<Icon as={IconChevronsRight} boxSize={4} />}

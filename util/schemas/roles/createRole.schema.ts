@@ -22,9 +22,19 @@ export const createRoleSchema = z
     startMonth: true,
   })
   .refine(
-    ({ startMonth, endMonth }) => (endMonth ? endMonth > startMonth : null),
+    ({ startMonth, endMonth, current }) =>
+      (current && startMonth) || (startMonth && endMonth),
     {
-      message: "If there's an end month, it must be AFTER the start month",
+      message:
+        'You need to either check the current checkbox or set an end month, but not both.',
+      path: ['endMonth'],
+    }
+  )
+  .refine(
+    ({ startMonth, endMonth }) =>
+      startMonth && endMonth ? endMonth > startMonth : false,
+    {
+      message: 'End month must be after start month.',
       path: ['endMonth'],
     }
   )

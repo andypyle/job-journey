@@ -1,5 +1,6 @@
 import { createHandlerClient } from '@/db'
 import { rolesInsertSchema } from '@/db/dbTypes.schemas'
+import { RoleInsert } from '@/db/types'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -15,9 +16,12 @@ export async function POST(req: NextRequest) {
     ...(await req.json()),
   })
 
+  console.log({ data })
+
   if (data) {
     try {
-      const inserted = await supabase.from('roles').insert(data)
+      const inserted = await supabase.from('roles').insert(data as RoleInsert)
+
       return NextResponse.json(inserted)
     } catch (e) {
       console.warn({ e })
