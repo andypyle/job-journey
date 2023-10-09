@@ -3,6 +3,7 @@ import { rolesInsertSchema } from '@/db/dbTypes.schemas'
 import { RoleInsert } from '@/db/types'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
+import { getAllRoles } from './_actions/getAllRoles'
 
 export async function POST(req: NextRequest) {
   const supabase = createHandlerClient(cookies)
@@ -15,8 +16,6 @@ export async function POST(req: NextRequest) {
     user_id,
     ...(await req.json()),
   })
-
-  console.log({ data })
 
   if (data) {
     try {
@@ -31,6 +30,8 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(data)
 }
 
-export async function GET() {
-  // GET request
+export async function GET(req: NextRequest) {
+  const roles = await getAllRoles()
+
+  return NextResponse.json(roles)
 }

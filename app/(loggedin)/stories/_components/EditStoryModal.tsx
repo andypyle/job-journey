@@ -1,9 +1,9 @@
 'use client'
 
 import { ControlledSingleSelect } from '@/components/Form'
-import type { ModalProps } from '@/components/Modal'
-import { Modal } from '@/components/Modal'
-import { RoleRow } from '@/db/types'
+import { Modal, type ModalProps } from '@/components/Modal'
+import { storiesUpdateSchema } from '@/db/dbTypes.schemas'
+import type { RoleRow } from '@/db/types'
 import {
   Button,
   FormControl,
@@ -11,75 +11,68 @@ import {
   FormLabel,
   ModalFooter,
   Textarea,
-  VStack,
-  useToast,
+  VStack
 } from '@chakra-ui/react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
-import type { FieldValues } from 'react-hook-form'
-import { useForm } from 'react-hook-form'
+import { FieldValues, useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { IStory } from './StoryCard'
 
-type NewStoryModalProps = {
-  roles: RoleRow[]
+type StoryType = z.infer<typeof storiesUpdateSchema>
+
+type EditStoryModalProps = {
+  story: IStory
+  roleOptions: RoleRow[]
 } & Omit<ModalProps, 'children'>
 
-export const NewStoryModal: React.FC<NewStoryModalProps> = ({
-  roles,
+export const EditStoryModal: React.FC<EditStoryModalProps> = ({
+  story,
+  roleOptions,
   onClose,
   ...props
 }) => {
-  const toast = useToast()
-  const roleOptions = useMemo(
-    () =>
-      roles.map((r) => ({
-        label: `${r.title} @ ${r.company}`,
-        value: r.id,
-      })),
-    [roles]
-  )
-
   const {
     handleSubmit,
     register,
     reset,
-    watch,
-    resetField,
     setValue,
     getValues,
+    resetField,
+    watch,
     formState: { errors, isSubmitting, isValid, defaultValues },
     control,
-  } = useForm()
+  } = useForm({
+    resolver: zodResolver(storiesUpdateSchema),
+    defaultValues: {
+      role_id: story.role_id ?? null,
+      text: story.text ?? ''
+    }
+  })
 
-  const { refresh } = useRouter()
+  const { refresh } = useRouter();
 
   const onSubmit = async (values: FieldValues) => {
     if (isValid) {
-      const data = await fetch('/api/stories', {
-        method: 'POST',
+      const data = await fetch(`/api/stories/${story.id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(values),
-      })
+      });
 
-      if (data?.status === 200) {
-        toast({
-          title: 'Story created',
-          description: 'Great success!',
-          status: 'success',
-          duration: 6000,
-          isClosable: true,
-        })
-        reset()
-        onClose()
-        refresh()
+      if (data.status === 200) {
+        reset();
+        onClose();
+        refresh();
       }
     }
   }
 
   return (
     <Modal
-      title="New Story"
+      title="Edit Story"
       size={{ base: 'full', md: '2xl' }}
       footer={
         <ModalFooter justifyContent="flex-end" p={4}>
@@ -88,7 +81,7 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
             size="md"
             type="submit"
             isLoading={isSubmitting}>
-            Create Story
+            Save Story
           </Button>
         </ModalFooter>
       }
@@ -102,9 +95,11 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
         <ControlledSingleSelect
           name="role_id"
           control={control}
+          defaultValue={story.role_id}
+          getOptionValue={(opt: any) => opt.value}
           label="Role"
           placeholder="Select a role"
-          options={roleOptions}
+          options={roleOptions.map(({ id, company, title }) => ({ label: `${title} @ ${company}`, value: id}))}
         />
         <FormControl
           isInvalid={Boolean(errors.text)}
