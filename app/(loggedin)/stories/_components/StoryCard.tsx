@@ -1,7 +1,7 @@
 'use client'
 
 import { Confirm } from '@/components/Confirm'
-import { RoleRow, StoryRow } from '@/db/types'
+import { RoleRow, StoryRow, TagRow } from '@/db/types'
 import type { CardProps } from '@chakra-ui/react'
 import {
   Badge,
@@ -13,7 +13,9 @@ import {
   Heading,
   Icon,
   IconButton,
+  Tag,
   Text,
+  Wrap,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
@@ -24,19 +26,22 @@ import { EditStoryModal } from './EditStoryModal'
 
 export interface IStory extends StoryRow {
   roles: RoleRow
+  tags: TagRow[]
 }
 
 type StoryCardProps = {
   storyRow: IStory
   allRoles: RoleRow[]
+  allTags: TagRow[]
 } & CardProps
 
 export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
   storyRow,
   allRoles,
+  allTags,
   ...props
 }) => {
-  const { id, text, roles } = storyRow
+  const { id, text, roles, tags } = storyRow
   const [loading, setLoading] = useState<boolean>(false)
   const toast = useToast()
 
@@ -88,16 +93,18 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
         <Badge size="xs" colorScheme="orange" borderRadius="xl" px={4} py={1}>
           {roles.title}
         </Badge>
-        {/* <Text size="xs" color="gray.600">
-          
-        </Text> */}
       </CardHeader>
       <CardBody p={4}>
         <Text noOfLines={4} size="xs" color="gray.500" gap={2}>
           {text}
         </Text>
       </CardBody>
-      <CardFooter justifyContent="flex-end" p={4}>
+      <CardFooter justifyContent="space-between" alignItems="flex-end" p={4}>
+        <Wrap>
+          {storyRow.tags.map((t) => (
+            <Tag key={`story-${id}-tag-${t.id}`}>{t.name}</Tag>
+          ))}
+        </Wrap>
         <ButtonGroup spacing={2} size="xs">
           <IconButton
             aria-label={`Remove story: ${roles.company}`}
@@ -149,6 +156,7 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
           onClose={onEditClose}
           story={storyRow}
           roleOptions={allRoles}
+          tagOptions={allTags}
         />
       ) : null}
     </Card>

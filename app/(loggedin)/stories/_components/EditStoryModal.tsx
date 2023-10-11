@@ -1,9 +1,9 @@
 'use client'
 
-import { ControlledSingleSelect } from '@/components/Form'
+import { ControlledSingleSelect, TagInput } from '@/components/Form'
 import { Modal, type ModalProps } from '@/components/Modal'
 import { storiesUpdateSchema } from '@/db/dbTypes.schemas'
-import type { RoleRow } from '@/db/types'
+import type { RoleRow, TagRow } from '@/db/types'
 import {
   Button,
   FormControl,
@@ -24,11 +24,13 @@ type StoryType = z.infer<typeof storiesUpdateSchema>
 type EditStoryModalProps = {
   story: IStory
   roleOptions: RoleRow[]
+  tagOptions: TagRow[]
 } & Omit<ModalProps, 'children'>
 
 export const EditStoryModal: React.FC<EditStoryModalProps> = ({
   story,
   roleOptions,
+  tagOptions,
   onClose,
   ...props
 }) => {
@@ -46,20 +48,23 @@ export const EditStoryModal: React.FC<EditStoryModalProps> = ({
     resolver: zodResolver(storiesUpdateSchema),
     defaultValues: {
       role_id: story.role_id ?? null,
-      text: story.text ?? ''
+      text: story.text ?? '',
+      tags: story.tags.map((t: any) => ({ label: t.name, value: t.id }))
     }
   })
 
   const { refresh } = useRouter();
-
+  
+  const allTags = tagOptions.map(({ id, name }) => ({ label: name, value: id }))
   const onSubmit = async (values: FieldValues) => {
+    
     if (isValid) {
       const data = await fetch(`/api/stories/${story.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ old: story, new: values }),
       });
 
       if (data.status === 200) {
@@ -115,6 +120,14 @@ export const EditStoryModal: React.FC<EditStoryModalProps> = ({
             <FormErrorMessage>{errors.text.message as string}</FormErrorMessage>
           ) : null}
         </FormControl>
+        <TagInput
+          name="tags"
+          control={control}
+          label="Tags"
+          placeholder="Add tags"
+          isMulti
+          options={allTags}
+        />
       </VStack>
     </Modal>
   )

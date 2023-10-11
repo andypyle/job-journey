@@ -1,7 +1,7 @@
 'use client'
 
 import { SectionHeader } from '@/components/Layout'
-import { RoleRow } from '@/db/types'
+import { RoleRow, TagRow } from '@/db/types'
 import { Button, Icon, VStack, useDisclosure } from '@chakra-ui/react'
 import { IconPlus } from '@tabler/icons-react'
 import { NewStoryModal } from './NewStoryModal'
@@ -9,9 +9,11 @@ import { NewStoryModal } from './NewStoryModal'
 export const StoriesLayout = ({
   children,
   roles,
+  tags,
 }: {
   children: React.ReactNode
   roles: RoleRow[]
+  tags: TagRow[]
 }) => {
   const {
     isOpen: isNewStoryOpen,
@@ -36,7 +38,8 @@ export const StoriesLayout = ({
       <NewStoryModal
         isOpen={isNewStoryOpen}
         onClose={onNewStoryClose}
-        roles={roles}
+        allRoles={roles}
+        allTags={tags}
       />
       {children}
     </VStack>

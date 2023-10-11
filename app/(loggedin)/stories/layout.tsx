@@ -1,4 +1,5 @@
 import { getAllRoles } from '@/app/api/roles/_actions/getAllRoles'
+import { getAllTags } from '@/app/api/tags/_actions/getAllTags'
 import { StoriesLayout } from './_components/StoriesLayout'
 
 export default async function StoriesPageLayout({
@@ -7,5 +8,10 @@ export default async function StoriesPageLayout({
   children: React.ReactNode
 }) {
   const roles = await getAllRoles()
-  return <StoriesLayout roles={roles!}>{children}</StoriesLayout>
+  const allTags = await getAllTags()
+  return (
+    <StoriesLayout roles={roles!} tags={allTags!}>
+      {children}
+    </StoriesLayout>
+  )
 }

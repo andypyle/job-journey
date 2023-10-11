@@ -1,9 +1,9 @@
 'use client'
 
-import { ControlledSingleSelect } from '@/components/Form'
+import { ControlledSingleSelect, TagInput } from '@/components/Form'
 import type { ModalProps } from '@/components/Modal'
 import { Modal } from '@/components/Modal'
-import { RoleRow } from '@/db/types'
+import { RoleRow, TagRow } from '@/db/types'
 import {
   Button,
   FormControl,
@@ -20,22 +20,33 @@ import type { FieldValues } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 
 type NewStoryModalProps = {
-  roles: RoleRow[]
+  allRoles: RoleRow[]
+  allTags: TagRow[]
 } & Omit<ModalProps, 'children'>
 
 export const NewStoryModal: React.FC<NewStoryModalProps> = ({
-  roles,
+  allRoles,
+  allTags,
   onClose,
   ...props
 }) => {
   const toast = useToast()
   const roleOptions = useMemo(
     () =>
-      roles.map((r) => ({
+      allRoles.map((r) => ({
         label: `${r.title} @ ${r.company}`,
         value: r.id,
       })),
-    [roles]
+    [allRoles]
+  )
+
+  const tagOptions = useMemo(
+    () =>
+      allTags.map((t) => ({
+        label: t.name,
+        value: t.id,
+      })),
+    [allTags]
   )
 
   const {
@@ -53,6 +64,7 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
   const { refresh } = useRouter()
 
   const onSubmit = async (values: FieldValues) => {
+    console.log({ values, isValid })
     if (isValid) {
       const data = await fetch('/api/stories', {
         method: 'POST',
@@ -120,6 +132,14 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
             <FormErrorMessage>{errors.text.message as string}</FormErrorMessage>
           ) : null}
         </FormControl>
+        <TagInput
+          name="tags"
+          control={control}
+          label="Tags"
+          placeholder="Add tags"
+          isMulti
+          options={tagOptions}
+        />
       </VStack>
     </Modal>
   )

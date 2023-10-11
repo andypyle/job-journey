@@ -148,8 +148,21 @@ export const storiesUpdateSchema = z.object({
   created_at: z.string().optional(),
   id: z.number().optional(),
   role_id: z.number().optional().nullable(),
-  text: z.string().optional().nullable(),
+  text: z
+    .string()
+    .nonempty({ message: 'Story needs some text.' })
+    .optional()
+    .nullable(),
   user_id: z.string().optional().nullable(),
+  tags: z
+    .array(
+      z.object({
+        label: z.string(),
+        value: z.number().or(z.string()).optional(),
+        __isNew__: z.boolean().optional(),
+      })
+    )
+    .nullable(),
 })
 
 export const storiesBulletpointsRowSchema = z.object({
@@ -207,12 +220,14 @@ export const tagsRowSchema = z.object({
   user_id: z.string().nullable(),
 })
 
-export const tagsInsertSchema = z.object({
-  created_at: z.string().optional(),
-  id: z.number().optional(),
-  name: z.string().optional().nullable(),
-  user_id: z.string().optional().nullable(),
-})
+export const tagsInsertSchema = z.array(
+  z.object({
+    created_at: z.string().optional(),
+    id: z.number().optional(),
+    name: z.string().optional().nullable(),
+    user_id: z.string().optional().nullable(),
+  })
+)
 
 export const tagsUpdateSchema = z.object({
   created_at: z.string().optional(),
