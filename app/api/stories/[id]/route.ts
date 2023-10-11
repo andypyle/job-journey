@@ -4,17 +4,17 @@ import { TagRow } from '@/db/types'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 import { attachTags, insertTags, unattachTags } from '../../tags/_actions'
+import { deleteStory } from '../_actions'
 
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const supabase = createServerClient(cookies)
   const { id } = params
 
-  const data = await supabase.from('stories').delete().eq('id', id)
+  const deletedStory = await deleteStory(Number(id))
 
-  return NextResponse.json(data)
+  return NextResponse.json(deletedStory)
 }
 
 export async function PATCH(

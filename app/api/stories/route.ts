@@ -3,6 +3,8 @@ import { storiesInsertSchema, tagsInsertSchema } from '@/db/dbTypes.schemas'
 import type { StoryInsert } from '@/db/types'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
+import { attachTags, insertTags } from '../tags/_actions'
+import { insertStory } from './_actions'
 import { getAllStories } from './_actions/getAllStories'
 
 export async function POST(req: NextRequest) {
@@ -37,28 +39,22 @@ export async function POST(req: NextRequest) {
 
   if (data) {
     try {
-      const inserted = await supabase
-        .from('stories')
-        .insert(data as StoryInsert)
-        .select('id')
+      const inserted = await insertStory(data as StoryInsert)
+
       if (inserted.status === 201 && newTags) {
-        const insertedTags = await supabase
-          .from('tags')
-          .insert(newTags)
-          .select('id')
+        const insertedTags = await insertTags(newTags)
+
         if (insertedTags.status === 201) {
           const newAndExistingTagIds = [
             ...existingTags,
             ...insertedTags.data!.map((t: any) => t.id),
           ]
-          const attachTagsToStories = await supabase
-            .from('stories_tags')
-            .insert(
-              newAndExistingTagIds.map((id: number) => ({
-                tag_id: id,
-                story_id: inserted!.data![0].id,
-              }))!
-            )
+
+          const attachTagsToStories = await attachTags(
+            newAndExistingTagIds,
+            inserted!.data![0].id
+          )
+
           if (attachTagsToStories.status === 201) {
             return NextResponse.json(inserted)
           }
