@@ -9,12 +9,16 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Icon,
+  IconButton,
   ModalFooter,
   Textarea,
   VStack
 } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { IconBrandOpenai } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { useCallback, useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { IStory } from './StoryCard'
@@ -23,17 +27,18 @@ type StoryType = z.infer<typeof storiesUpdateSchema>
 
 type EditStoryModalProps = {
   story: IStory
-  roleOptions: RoleRow[]
+  allRoles: RoleRow[]
   tagOptions: TagRow[]
 } & Omit<ModalProps, 'children'>
 
-export const EditStoryModal: React.FC<EditStoryModalProps> = ({
+export const EditStoryModal = ({
   story,
-  roleOptions,
+  allRoles,
   tagOptions,
   onClose,
   ...props
-}) => {
+}: EditStoryModalProps) => {
+  const [loadingGpt, setLoadingGpt] = useState<boolean>(false);
   const {
     handleSubmit,
     register,
@@ -56,6 +61,26 @@ export const EditStoryModal: React.FC<EditStoryModalProps> = ({
   const { refresh } = useRouter();
   
   const allTags = tagOptions.map(({ id, name }) => ({ label: name, value: id }))
+
+  const onClickGpt = useCallback(async () => {
+    setLoadingGpt(true)
+    const currentFormData = getValues()
+
+    const data = await fetch('/api/gpt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        roles: allRoles.find(({ id }) => id === currentFormData.role_id),
+        ...currentFormData,
+      }),
+    }).then((d) => d.json())
+    setLoadingGpt(false)
+
+    setValue('tags', data)
+  }, [])
+  
   const onSubmit = async (values: FieldValues) => {
     
     if (isValid) {
@@ -104,7 +129,7 @@ export const EditStoryModal: React.FC<EditStoryModalProps> = ({
           getOptionValue={(opt: any) => opt.value}
           label="Role"
           placeholder="Select a role"
-          options={roleOptions.map(({ id, company, title }) => ({ label: `${title} @ ${company}`, value: id}))}
+          options={allRoles.map(({ id, company, title }) => ({ label: `${title} @ ${company}`, value: id}))}
         />
         <FormControl
           isInvalid={Boolean(errors.text)}
@@ -124,6 +149,18 @@ export const EditStoryModal: React.FC<EditStoryModalProps> = ({
           name="tags"
           control={control}
           label="Tags"
+          labelRight={
+            <IconButton
+              icon={<Icon as={IconBrandOpenai} boxSize={6} />}
+              isLoading={loadingGpt}
+              onClick={onClickGpt}
+              size="sm"
+              colorScheme="purple"
+              aria-label="Use OpenAI"
+            />
+          }
+          isDisabled={loadingGpt}
+          isLoading={loadingGpt}
           placeholder="Add tags"
           isMulti
           options={allTags}

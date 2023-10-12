@@ -102,7 +102,12 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
       <CardFooter justifyContent="space-between" alignItems="flex-end" p={4}>
         <Wrap>
           {storyRow.tags.map((t) => (
-            <Tag key={`story-${id}-tag-${t.id}`}>{t.name}</Tag>
+            <Tag
+              colorScheme="cyan"
+              variant="subtle"
+              key={`story-${id}-tag-${t.id}`}>
+              {t.name}
+            </Tag>
           ))}
         </Wrap>
         <ButtonGroup spacing={2} size="xs">
@@ -155,7 +160,7 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
           isOpen={isEditOpen}
           onClose={onEditClose}
           story={storyRow}
-          roleOptions={allRoles}
+          allRoles={allRoles}
           tagOptions={allTags}
         />
       ) : null}

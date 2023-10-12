@@ -14,6 +14,7 @@ interface TagInputProps<
 > extends Omit<SelectProps<Option, IsMulti, Group>, 'name' | 'defaultValue'>,
     UseControllerProps<FormValues> {
   label?: string
+  labelRight?: React.ReactNode
 }
 
 /**
@@ -29,6 +30,7 @@ export function TagInput<
 >({
   name,
   label,
+  labelRight,
   options,
   control,
   rules,
@@ -48,9 +50,16 @@ export function TagInput<
 
   return (
     <FormControl label={label} isInvalid={!!error} id={name}>
-      {label && <FormLabel>{label}</FormLabel>}
+      {label && (
+        <FormLabel display="flex" w="full" justifyContent="space-between">
+          {label}
+          {labelRight && labelRight}
+        </FormLabel>
+      )}
       <CreatableSelect<Option, IsMulti, Group>
         options={options}
+        tagVariant="subtle"
+        colorScheme="cyan"
         {...selectProps}
         {...field}
       />

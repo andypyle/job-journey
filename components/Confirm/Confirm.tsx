@@ -33,7 +33,11 @@ export const Confirm: React.FC<ConfirmProps> = ({
   const cancelRef = useRef(null)
 
   return (
-    <AlertDialog {...props} onClose={onClose} leastDestructiveRef={cancelRef}>
+    <AlertDialog
+      {...props}
+      onClose={onClose}
+      leastDestructiveRef={cancelRef}
+      size={{ base: 'xs', md: 'md' }}>
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader

@@ -9,13 +9,16 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Icon,
+  IconButton,
   ModalFooter,
   Textarea,
   VStack,
   useToast,
 } from '@chakra-ui/react'
+import { IconBrandOpenai } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { FieldValues } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 
@@ -30,6 +33,7 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
   onClose,
   ...props
 }) => {
+  const [loadingGpt, setLoadingGpt] = useState<boolean>(false)
   const toast = useToast()
   const roleOptions = useMemo(
     () =>
@@ -63,8 +67,26 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
 
   const { refresh } = useRouter()
 
+  const onClickGpt = useCallback(async () => {
+    setLoadingGpt(true)
+    const currentFormData = getValues()
+
+    const data = await fetch('/api/gpt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        roles: allRoles.find(({ id }) => id === currentFormData.role_id),
+        ...currentFormData,
+      }),
+    }).then((d) => d.json())
+    setLoadingGpt(false)
+
+    setValue('tags', data)
+  }, [])
+
   const onSubmit = async (values: FieldValues) => {
-    console.log({ values, isValid })
     if (isValid) {
       const data = await fetch('/api/stories', {
         method: 'POST',
@@ -136,6 +158,18 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
           name="tags"
           control={control}
           label="Tags"
+          labelRight={
+            <IconButton
+              icon={<Icon as={IconBrandOpenai} boxSize={6} />}
+              isLoading={loadingGpt}
+              onClick={onClickGpt}
+              size="sm"
+              colorScheme="purple"
+              aria-label="Use OpenAI"
+            />
+          }
+          isDisabled={loadingGpt}
+          isLoading={loadingGpt}
           placeholder="Add tags"
           isMulti
           options={tagOptions}

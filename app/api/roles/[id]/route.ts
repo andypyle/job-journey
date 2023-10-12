@@ -24,8 +24,6 @@ export async function PATCH(
 
   const data = rolesUpdateSchema.safeParse(await req.json())
 
-  console.log(data)
-
   if (data?.success) {
     const updated = await supabase.from('roles').update(data?.data).eq('id', id)
 

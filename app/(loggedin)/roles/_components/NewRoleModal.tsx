@@ -40,8 +40,6 @@ export const NewRoleModal: React.FC<Omit<ModalProps, 'children'>> = ({
     resolver: zodResolver(rolesInsertSchema),
   })
 
-  console.log({ errors })
-
   const { refresh } = useRouter();
 
   const startMonth = useWatch({

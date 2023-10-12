@@ -1,17 +1,8 @@
 'use client'
 
 import { loginSchema } from '@/util/schemas'
-import {
-  AbsoluteCenter,
-  Box,
-  Button,
-  Card,
-  Divider,
-  FormControl,
-  Input,
-} from '@chakra-ui/react'
+import { Button, Card, FormControl, Input } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -89,7 +80,7 @@ export const Login = () => {
           isLoading={isSubmitting}>
           Login
         </Button>
-        <Box position="relative" py={4} w="full">
+        {/* <Box position="relative" py={4} w="full">
           <Divider color="gray.600" />
           <AbsoluteCenter bg="white" px="4" color="gray.600">
             Don't have an account?
@@ -97,12 +88,14 @@ export const Login = () => {
         </Box>
         <Button
           as={Link}
+          disabled
+          isDisabled
           href="/register"
           size="lg"
           colorScheme="teal"
           w="full">
           Register
-        </Button>
+        </Button> */}
       </Card>
     </form>
   )
