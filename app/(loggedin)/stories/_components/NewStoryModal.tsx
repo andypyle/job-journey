@@ -84,7 +84,7 @@ export const NewStoryModal: React.FC<NewStoryModalProps> = ({
     setLoadingGpt(false)
 
     setValue('tags', data)
-  }, [])
+  }, [getValues, setValue, allRoles])
 
   const onSubmit = async (values: FieldValues) => {
     if (isValid) {

@@ -82,7 +82,7 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
       onDeleteClose()
       refresh()
     }
-  }, [id, refresh, onDeleteClose])
+  }, [id, refresh, onDeleteClose, toast])
 
   return (
     <Card {...props} shadow="none" gap={0}>

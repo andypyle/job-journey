@@ -79,7 +79,7 @@ export const EditStoryModal = ({
     setLoadingGpt(false)
 
     setValue('tags', data)
-  }, [])
+  }, [setValue, getValues, allRoles])
   
   const onSubmit = async (values: FieldValues) => {
     
