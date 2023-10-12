@@ -5,6 +5,8 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import '../globals.css'
 
+export const dynamic = 'force-dynamic'
+
 export default async function RootLoggedInLayout({
   children,
 }: {

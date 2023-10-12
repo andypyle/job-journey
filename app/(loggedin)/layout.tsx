@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation'
 import '../globals.css'
 import { MainLayout } from './_components'
 
+export const dynamic = 'force-dynamic'
+
 export default async function RootLoggedInLayout({
   children,
 }: {
