@@ -28,6 +28,7 @@ export default async function RootLoggedInLayout({
           name="viewport"
           content="minimum-scale=1, maximum-scale=1, initial-scale=1, width=device-width, user-scalable=0"
         />
+        <title>JobJourney</title>
       </head>
       <body>
         <Providers>
