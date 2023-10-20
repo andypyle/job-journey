@@ -53,7 +53,7 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
   allTags,
   ...props
 }) => {
-  const { id, text, roles, tags, similarity } = storyRow
+  const { id, text, roles, tags } = storyRow
   const [loading, setLoading] = useState<boolean>(false)
   const toast = useToast()
 

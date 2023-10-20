@@ -15,7 +15,8 @@ export const insertStory = async (story: StoryInsert) => {
     normalize: true,
   })
 
-  const embedding = Array.from(storyEmbedding.data)
+  // Casting this as any for now. Supabase generates vectors as string | null | undefined for some reason.
+  const embedding = Array.from(storyEmbedding.data) as any
 
   const insertedStory = await supabase
     .from('stories')
