@@ -1,6 +1,6 @@
 import { Heading, VStack } from '@chakra-ui/react'
 
-export default function TagsLayout({
+export default async function TagsLayout({
   children,
 }: {
   children: React.ReactNode

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const user_id = user?.id
   const body = await req.json()
   const role_id = body?.role_id
-  const tags = body?.tags
+  const tags = body?.tags ?? []
 
   const existingTags = tags
     .filter((t: any) => !t.__isNew__)

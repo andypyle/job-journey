@@ -13,11 +13,12 @@ import {
 } from '@chakra-ui/react'
 import { User } from '@supabase/supabase-js'
 import {
+  IconBookmarks,
   IconBooks,
   IconChevronRight,
   IconLogout2,
   IconUserHexagon,
-  type Icon as IconType,
+  type Icon as IconType
 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -129,6 +130,7 @@ export const SidebarNav: React.FC = () => {
       </Hide>
       <SidebarNavLink label="Roles" icon={IconUserHexagon} href="/roles" />
       <SidebarNavLink label="Stories" icon={IconBooks} href="/stories" />
+      <SidebarNavLink label="Tag Manager" icon={IconBookmarks} href="/tags" />
     </VStack>
   )
 }

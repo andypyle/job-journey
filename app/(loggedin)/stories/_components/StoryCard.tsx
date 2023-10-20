@@ -10,16 +10,28 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  HStack,
   Heading,
   Icon,
   IconButton,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
   Tag,
   Text,
   Wrap,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { IconAlertTriangle, IconPencil, IconTrash } from '@tabler/icons-react'
+import {
+  IconAlertTriangle,
+  IconEye,
+  IconPencil,
+  IconTrash,
+} from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { EditStoryModal } from './EditStoryModal'
@@ -41,7 +53,7 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
   allTags,
   ...props
 }) => {
-  const { id, text, roles, tags } = storyRow
+  const { id, text, roles, tags, similarity } = storyRow
   const [loading, setLoading] = useState<boolean>(false)
   const toast = useToast()
 
@@ -87,7 +99,7 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
   return (
     <Card {...props} shadow="none" gap={0}>
       <CardHeader p={4}>
-        <Heading size="sm" mb={2}>
+        <Heading size="sm" mb={2} display="flex" justifyContent="space-between">
           {roles.company}
         </Heading>
         <Badge size="xs" colorScheme="orange" borderRadius="xl" px={4} py={1}>
@@ -98,6 +110,28 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
         <Text noOfLines={4} size="xs" color="gray.500" gap={2}>
           {text}
         </Text>
+        <HStack justifyContent="flex-end">
+          <Popover>
+            <PopoverTrigger>
+              <Icon
+                as={IconEye}
+                boxSize={6}
+                color="teal.200"
+                cursor="pointer"
+                _hover={{ color: 'teal.400' }}
+              />
+            </PopoverTrigger>
+            <PopoverContent p={2}>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody>
+                <Text size="lg" color="gray.800" gap={2}>
+                  {text}
+                </Text>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+        </HStack>
       </CardBody>
       <CardFooter justifyContent="space-between" alignItems="flex-end" p={4}>
         <Wrap>
@@ -105,7 +139,8 @@ export const StoryCard: React.FC<Omit<StoryCardProps, 'user_id'>> = ({
             <Tag
               colorScheme="cyan"
               variant="subtle"
-              key={`story-${id}-tag-${t.id}`}>
+              key={`story-${id}-tag-${t.id}`}
+            >
               {t.name}
             </Tag>
           ))}

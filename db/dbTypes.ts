@@ -614,18 +614,21 @@ export interface Database {
         Row: {
           created_at: string
           created_by: string | null
+          embedding: string | null
           id: number
           question: string | null
         }
         Insert: {
           created_at?: string
           created_by?: string | null
+          embedding?: string | null
           id?: number
           question?: string | null
         }
         Update: {
           created_at?: string
           created_by?: string | null
+          embedding?: string | null
           id?: number
           question?: string | null
         }
@@ -715,6 +718,7 @@ export interface Database {
       stories: {
         Row: {
           created_at: string
+          embedding: string | null
           id: number
           role_id: number | null
           text: string | null
@@ -722,6 +726,7 @@ export interface Database {
         }
         Insert: {
           created_at?: string
+          embedding?: string | null
           id?: number
           role_id?: number | null
           text?: string | null
@@ -729,6 +734,7 @@ export interface Database {
         }
         Update: {
           created_at?: string
+          embedding?: string | null
           id?: number
           role_id?: number | null
           text?: string | null
@@ -826,18 +832,21 @@ export interface Database {
       tags: {
         Row: {
           created_at: string
+          embedding: string | null
           id: number
           name: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
+          embedding?: string | null
           id?: number
           name?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
+          embedding?: string | null
           id?: number
           name?: string | null
           user_id?: string | null
@@ -856,7 +865,60 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ivfflathandler: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      match_tags_to_stories: {
+        Args: {
+          tag_embedding: string
+          match_threshold: number
+          match_count: number
+        }
+        Returns: {
+          id: number
+          content: string
+          similarity: number
+        }[]
+      }
+      vector_avg: {
+        Args: {
+          "": number[]
+        }
+        Returns: string
+      }
+      vector_dims: {
+        Args: {
+          "": string
+        }
+        Returns: number
+      }
+      vector_norm: {
+        Args: {
+          "": string
+        }
+        Returns: number
+      }
+      vector_out: {
+        Args: {
+          "": string
+        }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: {
+          "": unknown[]
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
