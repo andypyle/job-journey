@@ -5,7 +5,7 @@ This is an application I've built for a few reasons:
 - Learn more about how the new App router works with NextJS
 
 ### The Idea
-So my idea was to build something to help keep track of all my successes, failures, and everything in between in my career. Often times, these scenarios are used to answer behavioral questions, so I thought it would be great to catalog these to help with interview preparation.
+My idea was to build something to help keep track of all my successes, failures, and everything in between in my career. Often times, these scenarios are used to answer behavioral questions, so I thought it would be great to catalog these to help with interview preparation.
 
 ## Tech
 - NextJS 13 / React
